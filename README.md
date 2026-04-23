@@ -1,4 +1,4 @@
-# PCFinder
+# SPARC: Single Cell Polyploidy analysis via RNA Characterization
 
 A computational pipeline for identifying polyploid cancer cells in single-cell RNA-seq data.
 
@@ -6,7 +6,7 @@ A computational pipeline for identifying polyploid cancer cells in single-cell R
 
 ## Overview
 
-PCFinder combines fast CNV inference from scRNA-seq count data (via [CopyKat](https://github.com/navinlabcode/copykat)) with a suite of 5 ML/DL classifiers to predict the probability that each cell is a polyploid cancer (PC) cell.
+sparc combines fast CNV inference from scRNA-seq count data (via [CopyKat](https://github.com/navinlabcode/copykat)) with a suite of 5 ML/DL classifiers to predict the probability that each cell is a polyploid cancer (PC) cell.
 
 ---
 
@@ -14,17 +14,17 @@ PCFinder combines fast CNV inference from scRNA-seq count data (via [CopyKat](ht
 
 Run the following scripts **in order**:
 
-1. `pcfinder_cnv_estimation.R` — CNV inference and feature extraction
-2. `pcfinder_run_models.py` — Run ML/DL classifiers and output per-cell predictions
+1. `sparc_cnv_inference.R` — CNV inference and feature extraction
+2. `sparc_run_models.py` — Run ML/DL classifiers and output per-cell predictions
 
 ---
 
 ## Usage
 
-### Step 1 — CNV Estimation (`pcfinder_cnv_estimation.R`)
+### Step 1 — CNV Estimation (`sparc_cnv_inference.R`)
 
 ```bash
-Rscript pcfinder_cnv_estimation.R \
+Rscript sparc_cnv_inference.R \
   --seurat        /path/to/object.rds \
   --epi_count     4000 \
   --tme_count     4000 \
@@ -62,10 +62,10 @@ Rscript pcfinder_cnv_estimation.R \
 
 ---
 
-### Step 2 — Run Classifiers (`pcfinder_run_models.py`)
+### Step 2 — Run Classifiers (`sparc_run_models.py`)
 
 ```bash
-pcfinder_run_models.py \
+sparc_run_models.py \
   --out               paccs_predictions.csv \
   --model_dir         models/ \
   --cell_id_col       cell \
@@ -78,7 +78,7 @@ The `input.csv` is the output from Step 1.
 
 | Argument | Default | Description |
 |---|---|---|
-| `input_csv` | *(required)* | Feature CSV output from `pcfinder_cnv_estimation.R` |
+| `input_csv` | *(required)* | Feature CSV output from `sparc_cnv_inference.R` |
 | `--out` | `paccs_predictions.csv` | Output CSV file for predictions |
 | `--model_dir` | `models/` | Directory containing saved `.pkl` models and `scaler.pkl` |
 | `--features` | See below | Feature columns to use for inference |
@@ -97,29 +97,29 @@ The `input.csv` is the output from Step 1.
 java -Xms4g -Xmx12g \
   -Dconfig.file=cromwell_compute1.conf \
   -jar cromwell-86.jar \
-  run pcfinder.wdl \
-  --inputs pcfinder.json
+  run sparc.wdl \
+  --inputs sparc.json
 ```
 
-### From an HPC (Compute1 at WashU)
+### From an HPC (e.g LSF batch script for Compute1 at WashU)
 
 ```bash
 bsub \
-  -J pcfinder \
+  -J sparc \
   -G compute-christophermaher \
   -g /saha.d/max100 \
   -q general \
   -n 4 \
   -R 'select[mem>16000] rusage[mem=16000]' \
   -M 16000000 \
-  -oo Logs/pcfinder.out \
-  -eo Logs/pcfinder.err \
+  -oo Logs/sparc.out \
+  -eo Logs/sparc.err \
   -a 'docker(openjdk:11.0.11-jdk-slim)' \
   /usr/local/openjdk-11/bin/java -Xms4g -Xmx12g \
     -Dconfig.file=cromwell_compute1.conf \
     -jar cromwell-86.jar \
-    run pcfinder.wdl \
-    --inputs pcfinder.json
+    run sparc.wdl \
+    --inputs sparc.json
 ```
 
 See `submit_wdl.sh` for a ready-to-use submission script.
@@ -130,12 +130,14 @@ See `submit_wdl.sh` for a ready-to-use submission script.
 
 ```
 ├── src/
-│   ├── pcfinder_cnv_estimation.R   # Step 1: CNV inference
-│   ├── pcfinder_run_models.py      # Step 2: ML/DL classification
 │   └── pipeline/                   # WDL pipeline, JSONs, Dockerfiles, configs
-├── data/                           # Example Seurat RDS files for replication
+|       └──sparc_cnv_inference.R    # Step 1: CNV inference
+│       └──sparc_run_models.py      # Step 2: ML/DL classification
+├── data/                           # Example CSV files for replication
 └── models/                         # Saved .pkl model files
 ```
+
+Additional processed data generated from cell line experiments during this study are available from the corresponding authors upon reasonable request. Published data from the scRNA-seq mCRPC cohort used in this analysis was accessed through the Gene Expression Omnibus repository (Accession ID GSE264573). 
 
 ---
 
