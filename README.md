@@ -1,12 +1,15 @@
 # SPARC: Single Cell Polyploidy analysis via RNA Characterization
 ![SPARC Graphical Abstract](results/pc_plots_v4/SPARC_graphical_abstract.png)
 A computational pipeline for identifying polyploid cancer cells in single-cell RNA-seq data.
+---
+
+---
 Graphical abstract created via BioRender (License under results/pc_plots_v4)
 ---
 
 ## Overview
 
-sparc combines fast CNV inference from scRNA-seq count data (via [CopyKat](https://github.com/navinlabcode/copykat)) with a suite of 5 ML/DL classifiers to predict the probability that each cell is a polyploid cancer (PC) cell.
+SPARC combines fast CNV inference from scRNA-seq count data (via [CopyKat](https://github.com/navinlabcode/copykat)) with a suite of 5 ML/DL classifiers to predict the probability that each cell is a polyploid cancer (PC) cell.
 
 ---
 
