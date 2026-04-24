@@ -10,6 +10,46 @@ sparc combines fast CNV inference from scRNA-seq count data (via [CopyKat](https
 
 ---
 
+## Installation
+ 
+### 1. Clone the repository
+ 
+```bash
+git clone https://github.com/dsaha0295/SPARC.git  
+cd SPARC
+```
+ 
+### 2. Install R dependencies
+ 
+Requires **R ≥ 4.1**. Install the following R packages:
+ 
+```r
+# CRAN packages for single cell processing and data wrangling
+install.packages(c("Seurat", "optparse", "tidyverse", "Matrix"))
+ 
+# CopyKat for CNV inference 
+if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")
+devtools::install_github("navinlabcode/copykat")
+```
+ 
+### 3. Install Python dependencies
+ 
+Requires **Python ≥ 3.8**. We would recommend creating a virtual environment e.g Conda:
+ 
+```bash
+pip install pandas numpy scikit-learn joblib
+```
+ 
+### 4. WDL pipeline dependencies
+ 
+To run the WDL pipeline you'll also need:
+ 
+- [Cromwell](https://github.com/broadinstitute/cromwell/releases) (v86 recommended) — download the `.jar` file
+- Java 11+ (e.g. `openjdk:11`)
+- Docker (for containerized execution)
+---
+ 
+
 ## Pipeline Steps
 
 Run the following scripts **in order**:
